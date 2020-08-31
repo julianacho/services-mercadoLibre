@@ -8,7 +8,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import com.mercado.libre.ipmanagementservice.entity.Blacklist;
 import com.mercado.libre.ipmanagementservice.models.IpResponse;
@@ -24,22 +25,19 @@ class IpManagementServiceApplicationTests {
 	@Autowired
 	private BlacklistService blacklistService;
 
-//	@Test
-//	void testRegister() {
-//		Blacklist blackList=new Blacklist();
-//		blackList.setIp(ip);
-//		blackList.setCreateAt(new Date());
-//		blackList = blacklistService.register(blackList);
-//		assertTrue(blackList!=null);
-//      
-//	}
+	@Test
+	void testRegister() {
+		Blacklist blackList=new Blacklist();
+		blackList.setIp(ip);
+		blackList.setCreateAt(new Date());
+		ResponseEntity<Object> rta = blacklistService.register(blackList);
+		assertTrue(rta.getStatusCode().equals(HttpStatus.CREATED));      
+	}
 	
 	@Test
-	void testFind() {
-		
-		IpResponse ipResponse = blacklistService.findIp(ip);
-		//System.out.println(listblackList!=null);
-       
+	void testFind() {		
+		ResponseEntity<Object>  ipResponse = blacklistService.findIp(ip);
+		assertTrue(ipResponse.getStatusCode().equals(HttpStatus.OK));       
 	}
 
 }

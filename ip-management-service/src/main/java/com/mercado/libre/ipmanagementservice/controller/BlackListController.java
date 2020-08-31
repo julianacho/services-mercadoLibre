@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,14 +29,14 @@ public class BlackListController {
 	
 	@GetMapping("/find/{ip}")// Se envi el id por parametro @PathVariable
 	@ResponseStatus(HttpStatus.OK)// Responde el estado de correcto aunque este se asigna por defecto
-	public IpResponse find(@PathVariable String ip) {
+	public ResponseEntity<Object> find(@PathVariable String ip) {
 		return this.blacklistService.findIp(ip);
 	}
 	
 	// Tipo post recibe el objeto cliente por parametro
 		@PostMapping("/register")// los datos bienen dentro de los datos de la peticion
 		@ResponseStatus(HttpStatus.CREATED) // Responde el estatus de creado
-		public Blacklist create(@RequestBody Blacklist blackList) {
+		public ResponseEntity<Object> create(@RequestBody Blacklist blackList) {
 			return blacklistService.register(blackList);			
 		}
 
