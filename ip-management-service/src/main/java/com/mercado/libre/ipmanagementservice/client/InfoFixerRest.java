@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.mercado.libre.ipmanagementservice.models.FixerSymbolResponse;
 
 
-@FeignClient(name = "service-info-fixer", url = "http://data.fixer.io/" )
+@FeignClient(name = "service-info-fixer", url = "${fixer.search.uri}" )
 public interface InfoFixerRest {
 	
 	@RequestMapping(method = RequestMethod.GET, consumes = "application/json" , 

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.mercado.libre.ipmanagementservice.models.CountryInfoResponse;
 
 
-@FeignClient(name = "service-info-country", url = "https://restcountries.eu/" )
+@FeignClient(name = "service-info-country", url = "${country.search.uri}" )
 public interface InfoCountryRest {
 	
 	@RequestMapping(method = RequestMethod.GET, consumes = "application/json" , value = "rest/v2/alpha/{cod}")

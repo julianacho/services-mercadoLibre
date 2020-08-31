@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 
 import org.apache.commons.validator.routines.InetAddressValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,11 @@ import com.mercado.libre.ipmanagementservice.models.IpServiceResponse;
 @Transactional
 public class BlacklistServiceImp implements BlacklistService {
 	
-	private static final String accesKey="4af31edcf77b46855a70abe1f8a2acc2";
+	@Value("${fixer.accesKey}")
+	private String accesKey;
+	
+//    private String payumerchantId;
+//	private static final String accesKey="4af31edcf77b46855a70abe1f8a2acc2";
 	private static final  InetAddressValidator inetValidator = InetAddressValidator.getInstance();
 	
 	@Autowired

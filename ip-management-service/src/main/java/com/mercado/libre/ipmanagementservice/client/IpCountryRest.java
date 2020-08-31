@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.mercado.libre.ipmanagementservice.models.IpServiceResponse;
 
 
-@FeignClient(name = "service-country-ip", url = "https://api.ip2country.info/" )
+@FeignClient(name = "service-country-ip", url ="${ipcountry.search.uri}")
 public interface IpCountryRest {
 	
 	
