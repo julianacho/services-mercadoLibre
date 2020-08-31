@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.mercado.libre.ipmanagementservice.cache.CountryCache;
 import com.mercado.libre.ipmanagementservice.client.InfoCountryRest;
 import com.mercado.libre.ipmanagementservice.client.InfoFixerRest;
 import com.mercado.libre.ipmanagementservice.client.IpCountryRest;
@@ -48,6 +49,9 @@ public class BlacklistServiceImp implements BlacklistService {
 	
 	@Autowired
 	InfoFixerRest infoFixerRest;
+	
+	@Autowired
+    private transient CountryCache cache;
 
 	@Override
 	public ResponseEntity<Object> register(Blacklist blackList) {	
@@ -78,6 +82,11 @@ public class BlacklistServiceImp implements BlacklistService {
 			if(blackListip==null || blackListip.isEmpty()) {
 				IpResponse response=new IpResponse();				
 				IpServiceResponse rtaIp=ipCountryRest.findCountry(ip);
+				// Se valida en la cache de paises
+				if(cache.getMap().get(rtaIp.getCountryCode())!=null) {
+					return new ResponseEntity<>(cache.getMap().get(rtaIp.getCountryCode()), HttpStatus.OK);
+				}
+				
 				CountryInfoResponse rtaInfoCountry=infoCountryRest.findCountryByCode(rtaIp.getCountryCode());
 				FixerSymbolResponse rta=infoFixerRest.findInfoSimbol(accesKey, rtaInfoCountry.getCurrencies().get(0).getCode());
 							
@@ -86,6 +95,8 @@ public class BlacklistServiceImp implements BlacklistService {
 				response.setCurrencyCountry(rtaInfoCountry.getCurrencies().get(0).getCode());
 				response.setCurrencyName(rtaInfoCountry.getCurrencies().get(0).getName());
 				response.setValueCurrencyEuro((Double)rta.getRates().get(rtaInfoCountry.getCurrencies().get(0).getCode()));
+				// Se registra en cache de paises
+				cache.getMap().put(response.getCountryCode(), response);
 				return new ResponseEntity<>(response, HttpStatus.OK);
 							
 			}else {
