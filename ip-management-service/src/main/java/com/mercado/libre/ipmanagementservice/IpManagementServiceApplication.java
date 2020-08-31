@@ -2,8 +2,12 @@ package com.mercado.libre.ipmanagementservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
+
+//Permite habilitar el clinete Feing
+@EnableFeignClients
 public class IpManagementServiceApplication {
 
 	public static void main(String[] args) {

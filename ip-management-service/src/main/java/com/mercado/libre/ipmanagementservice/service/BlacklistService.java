@@ -2,14 +2,15 @@ package com.mercado.libre.ipmanagementservice.service;
 
 
 
-import java.util.List;
+
 
 import com.mercado.libre.ipmanagementservice.entity.Blacklist;
+import com.mercado.libre.ipmanagementservice.models.IpResponse;
 
 public interface BlacklistService {
 	
 	public Blacklist register(Blacklist blackList);
 	
-	public List<Blacklist> findIp(String ip);
+	public IpResponse findIp(String ip);
 
 }

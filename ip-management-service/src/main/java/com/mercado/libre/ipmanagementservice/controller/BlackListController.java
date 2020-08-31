@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import com.mercado.libre.ipmanagementservice.entity.Blacklist;
+import com.mercado.libre.ipmanagementservice.models.IpResponse;
 import com.mercado.libre.ipmanagementservice.service.BlacklistService;
 
 
@@ -25,11 +26,11 @@ public class BlackListController {
 	@Autowired
 	private BlacklistService blacklistService;
 	
-//	@GetMapping("/find/{ip}")// Se envi el id por parametro @PathVariable
-//	@ResponseStatus(HttpStatus.OK)// Responde el estado de correcto aunque este se asigna por defecto
-//	public Blacklist find(@PathVariable String ip) {
-//		return this.blacklistService.findIp(ip);
-//	}
+	@GetMapping("/find/{ip}")// Se envi el id por parametro @PathVariable
+	@ResponseStatus(HttpStatus.OK)// Responde el estado de correcto aunque este se asigna por defecto
+	public IpResponse find(@PathVariable String ip) {
+		return this.blacklistService.findIp(ip);
+	}
 	
 	// Tipo post recibe el objeto cliente por parametro
 		@PostMapping("/register")// los datos bienen dentro de los datos de la peticion

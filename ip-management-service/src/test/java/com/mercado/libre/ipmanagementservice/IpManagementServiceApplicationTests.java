@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 
 import com.mercado.libre.ipmanagementservice.entity.Blacklist;
+import com.mercado.libre.ipmanagementservice.models.IpResponse;
 import com.mercado.libre.ipmanagementservice.service.BlacklistService;
 import com.mysql.cj.jdbc.ha.BalanceStrategy;
 
@@ -23,21 +24,21 @@ class IpManagementServiceApplicationTests {
 	@Autowired
 	private BlacklistService blacklistService;
 
-	@Test
-	void testRegister() {
-		Blacklist blackList=new Blacklist();
-		blackList.setIp(ip);
-		blackList.setCreateAt(new Date());
-		blackList = blacklistService.register(blackList);
-		assertTrue(blackList!=null);
-      
-	}
+//	@Test
+//	void testRegister() {
+//		Blacklist blackList=new Blacklist();
+//		blackList.setIp(ip);
+//		blackList.setCreateAt(new Date());
+//		blackList = blacklistService.register(blackList);
+//		assertTrue(blackList!=null);
+//      
+//	}
 	
 	@Test
 	void testFind() {
 		
-		List<Blacklist> listblackList = blacklistService.findIp(ip);
-		System.out.println(listblackList!=null);
+		IpResponse ipResponse = blacklistService.findIp(ip);
+		//System.out.println(listblackList!=null);
        
 	}
 
