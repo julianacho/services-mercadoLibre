@@ -1,7 +1,5 @@
 package com.mercado.libre.ipmanagementservice.service;
 
-
-
 import java.util.Date;
 import java.util.List;
 
@@ -26,88 +24,112 @@ import com.mercado.libre.ipmanagementservice.models.FixerSymbolResponse;
 import com.mercado.libre.ipmanagementservice.models.IpResponse;
 import com.mercado.libre.ipmanagementservice.models.IpServiceResponse;
 
-
+/**
+ * Implementacion del servicio de los metodos de la api
+ * 
+ * @author Julian
+ *
+ */
 @Service("blackListService")
 @Transactional
 public class BlacklistServiceImp implements BlacklistService {
-	
+
+	/**
+	 * Codigo de acceso para el cliente fixer
+	 */
 	@Value("${fixer.accesKey}")
 	private String accesKey;
-	
-//    private String payumerchantId;
-//	private static final String accesKey="4af31edcf77b46855a70abe1f8a2acc2";
-	private static final  InetAddressValidator inetValidator = InetAddressValidator.getInstance();
-	
+
+	/**
+	 * Instancia que permite realizar la validacion de la ip
+	 */
+	private static final InetAddressValidator inetValidator = InetAddressValidator.getInstance();
+
+	/**
+	 * Servicio del repositorio de la blacklist
+	 */
 	@Autowired
 	BlacklistRepository blacklistRepository;
-	
+
+	/**
+	 * Servicio Cliente para consulta de la ip
+	 */
 	@Autowired
 	IpCountryRest ipCountryRest;
-	
+
+	/**
+	 * Servicio Cliente para obtener información de un pais
+	 */
 	@Autowired
 	InfoCountryRest infoCountryRest;
-	
+
+	/**
+	 * Servicio Cliente que consulta las monedas de un pais
+	 */
 	@Autowired
 	InfoFixerRest infoFixerRest;
-	
+
+	/**
+	 * Servicio de cache, para optimizar los llamados a las API
+	 */
 	@Autowired
-    private transient CountryCache cache;
+	private transient CountryCache cache;
 
 	@Override
-	public ResponseEntity<Object> register(Blacklist blackList) {	
+	public ResponseEntity<Object> register(Blacklist blackList) {
 		try {
-			
-			if(!inetValidator.isValidInet4Address(blackList.getIp())) {
+
+			if (!inetValidator.isValidInet4Address(blackList.getIp())) {
 				return new ResponseEntity<>("Invalid Ip", HttpStatus.INTERNAL_SERVER_ERROR);
-				
-			}else {
+
+			} else {
 				blackList.setCreateAt(new Date());
 				return new ResponseEntity<>(blacklistRepository.save(blackList), HttpStatus.CREATED);
 			}
 		} catch (Exception e) {
 			return new ResponseEntity<>("Internal Error", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
-	   
 	}
 
 	@Override
 	public ResponseEntity<Object> findIp(String ip) {
 		try {
-			if(!inetValidator.isValidInet4Address(ip)) {
+			if (!inetValidator.isValidInet4Address(ip)) {
 				return new ResponseEntity<>("Invalid Ip", HttpStatus.INTERNAL_SERVER_ERROR);
-				
-			}else {
-			List<Blacklist> blackListip=blacklistRepository.findByIp(ip);			
-			if(blackListip==null || blackListip.isEmpty()) {
-				IpResponse response=new IpResponse();				
-				IpServiceResponse rtaIp=ipCountryRest.findCountry(ip);
-				// Se valida en la cache de paises
-				if(cache.getMap().get(rtaIp.getCountryCode())!=null) {
-					return new ResponseEntity<>(cache.getMap().get(rtaIp.getCountryCode()), HttpStatus.OK);
+
+			} else {
+				List<Blacklist> blackListip = blacklistRepository.findByIp(ip);
+				if (blackListip == null || blackListip.isEmpty()) {
+					IpResponse response = new IpResponse();
+					IpServiceResponse rtaIp = ipCountryRest.findCountry(ip);
+					// Se valida en la cache de paises
+					if (cache.getMap().get(rtaIp.getCountryCode()) != null) {
+						return new ResponseEntity<>(cache.getMap().get(rtaIp.getCountryCode()), HttpStatus.OK);
+					}
+
+					CountryInfoResponse rtaInfoCountry = infoCountryRest.findCountryByCode(rtaIp.getCountryCode());
+					FixerSymbolResponse rta = infoFixerRest.findInfoSimbol(accesKey,
+							rtaInfoCountry.getCurrencies().get(0).getCode());
+
+					response.setCountryName(rtaIp.getCountryName());
+					response.setCountryCode(rtaIp.getCountryCode());
+					response.setCurrencyCountry(rtaInfoCountry.getCurrencies().get(0).getCode());
+					response.setCurrencyName(rtaInfoCountry.getCurrencies().get(0).getName());
+					response.setValueCurrencyEuro(
+							(Double) rta.getRates().get(rtaInfoCountry.getCurrencies().get(0).getCode()));
+					// Se registra en cache de paises
+					cache.getMap().put(response.getCountryCode(), response);
+					return new ResponseEntity<>(response, HttpStatus.OK);
+
+				} else {
+					return new ResponseEntity<>("Ip Report in Ban/Blacklist", HttpStatus.NON_AUTHORITATIVE_INFORMATION);
 				}
-				
-				CountryInfoResponse rtaInfoCountry=infoCountryRest.findCountryByCode(rtaIp.getCountryCode());
-				FixerSymbolResponse rta=infoFixerRest.findInfoSimbol(accesKey, rtaInfoCountry.getCurrencies().get(0).getCode());
-							
-				response.setCountryName(rtaIp.getCountryName());
-				response.setCountryCode(rtaIp.getCountryCode());
-				response.setCurrencyCountry(rtaInfoCountry.getCurrencies().get(0).getCode());
-				response.setCurrencyName(rtaInfoCountry.getCurrencies().get(0).getName());
-				response.setValueCurrencyEuro((Double)rta.getRates().get(rtaInfoCountry.getCurrencies().get(0).getCode()));
-				// Se registra en cache de paises
-				cache.getMap().put(response.getCountryCode(), response);
-				return new ResponseEntity<>(response, HttpStatus.OK);
-							
-			}else {
-				return new ResponseEntity<>("Ip Report in Ban/Blacklist", HttpStatus.NON_AUTHORITATIVE_INFORMATION);
 			}
-			}
-			
-		} catch (Exception e) {			
+
+		} catch (Exception e) {
 			return new ResponseEntity<>("Internal Error", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
+
 	}
 
 }

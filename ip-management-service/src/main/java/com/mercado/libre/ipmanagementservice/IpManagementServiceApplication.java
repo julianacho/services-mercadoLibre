@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
-//Permite habilitar el clinete Feing
+//Permite habilitar el Cliente Feing
 @EnableFeignClients
 public class IpManagementServiceApplication {
 

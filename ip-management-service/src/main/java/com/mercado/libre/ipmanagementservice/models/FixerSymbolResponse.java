@@ -1,20 +1,31 @@
 package com.mercado.libre.ipmanagementservice.models;
 
-import java.util.List;
 import java.util.Map;
 
+/**
+ * Modelo que contiene la información de los valores de monedas
+ * 
+ * @author Julian
+ *
+ */
 public class FixerSymbolResponse {
-	
-	private String date;	
-	private Map<String,Object> rates;
-	// private FixerRateResponse[] rates;
-	//private List<FixerRateResponse> rates;
+
+	/**
+	 * Fecha de la moneda
+	 */
+	private String date;
+	/**
+	 * Arreglo de monedas
+	 */
+	private Map<String, Object> rates;
+
 	/**
 	 * @return the date
 	 */
 	public String getDate() {
 		return date;
 	}
+
 	/**
 	 * @param date the date to set
 	 */
@@ -30,6 +41,7 @@ public class FixerSymbolResponse {
 	/**
 	 * @param rates the rates to set
 	 */
+
 //	public void setRates(List<FixerRateResponse> rates) {
 //		this.rates = rates;
 //	}
@@ -39,12 +51,12 @@ public class FixerSymbolResponse {
 	public Map<String, Object> getRates() {
 		return rates;
 	}
+
 	/**
 	 * @param rates the rates to set
 	 */
 	public void setRates(Map<String, Object> rates) {
 		this.rates = rates;
 	}
-	
 
 }

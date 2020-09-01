@@ -12,7 +12,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * Entity that owns maps the table BLACK_lIST
+ * Entidad de la tabla BLACK_LIST 
  * @author Julian
  *
  */
