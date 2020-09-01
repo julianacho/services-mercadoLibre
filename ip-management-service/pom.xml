@@ -11,7 +11,7 @@
 	<groupId>com.mercado.libre</groupId>
 	<artifactId>ip-management-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>ip-management-service</name>
 	<description>Services to validate IP</description>
 

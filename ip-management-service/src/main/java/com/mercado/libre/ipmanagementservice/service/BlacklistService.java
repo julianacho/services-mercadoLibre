@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 
 import com.mercado.libre.ipmanagementservice.entity.Blacklist;
 
-import com.mercado.libre.ipmanagementservice.models.IpResponse;
 
 public interface BlacklistService {
 	

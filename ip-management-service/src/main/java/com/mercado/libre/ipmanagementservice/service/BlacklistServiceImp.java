@@ -100,7 +100,7 @@ public class BlacklistServiceImp implements BlacklistService {
 				return new ResponseEntity<>(response, HttpStatus.OK);
 							
 			}else {
-				return new ResponseEntity<>("Ip  Error", HttpStatus.NON_AUTHORITATIVE_INFORMATION);
+				return new ResponseEntity<>("Ip Report in Ban/Blacklist", HttpStatus.NON_AUTHORITATIVE_INFORMATION);
 			}
 			}
 			

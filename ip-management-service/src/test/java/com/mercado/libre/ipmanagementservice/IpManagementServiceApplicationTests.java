@@ -20,24 +20,47 @@ import com.mysql.cj.jdbc.ha.BalanceStrategy;
 @SpringBootTest
 class IpManagementServiceApplicationTests {
 	
-	final static String ip="3.23.22.138";
+	final static String ipRegisterBad="3.23";
+	final static String ipRegister="3.23.22.228";
+	final static String ipFind="3.23.22.139";
 	
 	@Autowired
 	private BlacklistService blacklistService;
 
 	@Test
-	void testRegister() {
+	void testRegisterOk() {
 		Blacklist blackList=new Blacklist();
-		blackList.setIp(ip);
+		blackList.setIp(ipRegister);
 		blackList.setCreateAt(new Date());
 		ResponseEntity<Object> rta = blacklistService.register(blackList);
 		assertTrue(rta.getStatusCode().equals(HttpStatus.CREATED));      
 	}
 	
 	@Test
-	void testFind() {		
-		ResponseEntity<Object>  ipResponse = blacklistService.findIp(ip);
+	void testRegisterBadIp() {
+		Blacklist blackList=new Blacklist();
+		blackList.setIp(ipRegisterBad);
+		blackList.setCreateAt(new Date());
+		ResponseEntity<Object> rta = blacklistService.register(blackList);
+		assertTrue(rta.getStatusCode().equals(HttpStatus.INTERNAL_SERVER_ERROR));      
+	}
+	
+	@Test
+	void testFindIpOk() {		
+		ResponseEntity<Object>  ipResponse = blacklistService.findIp(ipFind);
 		assertTrue(ipResponse.getStatusCode().equals(HttpStatus.OK));       
+	}
+	
+	@Test
+	void testFindIpReportInBlackList() {		
+		ResponseEntity<Object>  ipResponse = blacklistService.findIp(ipRegister);
+		assertTrue(ipResponse.getStatusCode().equals(HttpStatus.NON_AUTHORITATIVE_INFORMATION));       
+	}
+	
+	@Test
+	void testFindBadIp() {		
+		ResponseEntity<Object>  ipResponse = blacklistService.findIp(ipRegisterBad);
+		assertTrue(ipResponse.getStatusCode().equals(HttpStatus.INTERNAL_SERVER_ERROR));       
 	}
 
 }

@@ -1,0 +1,29 @@
+/******************************************************************************
+Comandos a ejecutar en docker
+******************************************************************************/
+- Crear una red
+docker network create mercadolibre-red
+
+-- Descarga Imagen MySQL
+docker pull mysql:8
+
+-- Desplegar Contenedor MYSQL
+docker run -p 3306:3306 --name mercadolibre-mysql --network mercadolibre-red -e MYSQL_ROOT_PASSWORD=admin -e MYSQL_DATABASE=mercadolibre -d mysql:8
+
+-- Logs
+docker logs -f mercadolibre-mysql
+
+-- Ejecutar Script
+docker exec -it mercadolibre-mysql mysql_config_editor set --login-path=local --host=localhost --user=root --password
+** Se ingresa la contraseña del usuario root
+docker exec -i mercadolibre-mysql mysql --login-path=local < script.sql
+
+-- Crear la Imagen 
+docker build -t ip-management-service:v1 .
+
+-- Desplegar Imagen (Puerto Externo: Puerto Interno, nombre del contenedor (host) , red, imagen)
+docker run -p 8002:8002 --name ip-management-service --network mercadolibre-red -d ip-management-service:v1
+
+docker logs -f ip-management-service
+
+****************************************************************************
